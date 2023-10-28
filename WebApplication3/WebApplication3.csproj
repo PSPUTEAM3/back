@@ -16,6 +16,9 @@
     <PackageReference Include="MimeKit" Version="4.2.0" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="7.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+    <PackageReference Include="System.Text.Encoding" Version="4.3.0" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="7.0.0" />
+    <PackageReference Include="VaultSharp" Version="1.13.0.1" />
   </ItemGroup>
 
 </Project>

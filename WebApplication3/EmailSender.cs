@@ -1,5 +1,6 @@
 ﻿using MailKit.Net.Smtp;
 using MimeKit;
+using System.Text;
 
 namespace WebApplication3
 {
@@ -14,6 +15,7 @@ namespace WebApplication3
         public EmailSender(IConfiguration configuration)
         {
             _configuration = configuration;
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
         }
 
         public async Task EmailConfirmationMessage(string email, string confirmationCode)
