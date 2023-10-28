@@ -19,7 +19,7 @@ namespace WebApplication3
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var tokenDecoded = tokenHandler.ReadJwtToken(currentToken);
-            return tokenDecoded.Claims.FirstOrDefault(claim => claim.Type == "jti")?.Value;
+            return tokenDecoded.Claims.FirstOrDefault(claim => claim.Type == "jti")?.Value!;
         }
         public bool IsInvalidToken(string currentTokenId)
         {
@@ -67,7 +67,7 @@ namespace WebApplication3
 
                 if (expiration <= DateTime.UtcNow)
                 {
-                    return null;
+                    return null!;
                 }
 
                 tokenHandler.ValidateToken(token, new TokenValidationParameters
@@ -79,11 +79,11 @@ namespace WebApplication3
                 }, out _);
 
                 var nameClaim = tokenDecoded.Claims.FirstOrDefault(claim => claim.Type == "user");
-                return nameClaim?.Value;
+                return nameClaim!.Value;
             }
             catch
             {
-                return null;
+                return null!;
             }
         }
         public DateTime GetTokenExpiryDate(string token)

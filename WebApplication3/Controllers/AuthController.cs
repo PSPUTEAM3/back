@@ -38,11 +38,11 @@ namespace WebApplication3.Controllers
             try
             {
                 // Ищем пользователя в базе по имени пользователя.
-                var user = _context.users.SingleOrDefault(u => u.Email == request.Email);
+                var user = _context.users.SingleOrDefault(u => u.Email == request.email);
                 //if (user == null)
                 //    user = _context.users.SingleOrDefault(u => u.Email == request.Username);
                 // Если пользователь не найден или пароль неверен, возвращаем ошибку 401.
-                if (user == null || !VerifyPassword(request.Password, user.PasswordHash!))
+                if (user == null || !VerifyPassword(request.password!, user.PasswordHash!))
                     return Unauthorized();
 
                 // Если email не подтвержден, возвращаем ошибку 400.
@@ -50,7 +50,7 @@ namespace WebApplication3.Controllers
                     return BadRequest(new { Error = "Please confirm your email address first" });
 
                 // Генерация токена и рефреш-токена.
-                var token = _tokenHelper.GenerateToken(user.Username);
+                var token = _tokenHelper.GenerateToken(user.Username!);
                 var refreshToken = Guid.NewGuid().ToString();
 
                 // Сохранение рефреш-токена и его срока годности в базе данных.
@@ -71,6 +71,7 @@ namespace WebApplication3.Controllers
             catch (Exception ex)
             {
                 // В случае ошибки возвращаем ошибку 500.
+                Console.WriteLine(ex);
                 return StatusCode(500, new { Error = "An error occurred while processing your request. Please try again later." });
             }
         }
@@ -100,7 +101,7 @@ namespace WebApplication3.Controllers
                     return Unauthorized(new { Message = "Invalid or expired refresh token" });
 
                 // Генерация нового токена.
-                var newToken = _tokenHelper.GenerateToken(user.Username);
+                var newToken = _tokenHelper.GenerateToken(user.Username!);
 
                 // Генерация нового рефреш-токена
                 var newRefreshToken = Guid.NewGuid().ToString();
@@ -118,6 +119,7 @@ namespace WebApplication3.Controllers
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex);
                 // В случае ошибки возвращаем ошибку 500.
                 return StatusCode(500, new { Error = "An error occurred while processing your request. Please try again later." });
             }
@@ -145,6 +147,7 @@ namespace WebApplication3.Controllers
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex);
                 // В случае ошибки возвращаем ошибку 500.
                 return StatusCode(500, new { Error = "An error occurred while processing your request. Please try again later." });
             }
@@ -156,7 +159,7 @@ namespace WebApplication3.Controllers
         {
             // Проверка на существование пользователя с таким же адресом электронной почты.
             var existingUser = await _context.users
-                .FirstOrDefaultAsync(u => u.Email == request.Email);
+                .FirstOrDefaultAsync(u => u.Email == request.email);
 
             if (existingUser != null)
             {
@@ -164,14 +167,14 @@ namespace WebApplication3.Controllers
             }
 
             // Хеширование пароля
-            string hashedPassword = BCrypt.Net.BCrypt.HashPassword(request.Password);
+            string hashedPassword = BCrypt.Net.BCrypt.HashPassword(request.password);
             string emailConfirmationCode = Guid.NewGuid().ToString();
 
             // Создание нового пользователя
             var newUser = new ApplicationUser
             {
-                Username = request.Username,
-                Email = request.Email,
+                Username = request.username,
+                Email = request.email,
                 PasswordHash = hashedPassword,
                 EmailConfirmed = false,
                 EmailConfirmationCode = emailConfirmationCode
@@ -180,9 +183,9 @@ namespace WebApplication3.Controllers
             await _context.SaveChangesAsync();
 
             // Создание ссылки для подтверждения адреса электронной почты.
-            var confirmationLink = $"{Request.Scheme}://{Request.Host}/api/Register/confirm-email?code={emailConfirmationCode}";
-            if (request.Email != null && confirmationLink != null)
-                await _emailSender.EmailConfirmationMessage(request.Email!, confirmationLink!);
+            var confirmationLink = $"{Request.Scheme}://{Request.Host}/api/auth/confirm-email?code={emailConfirmationCode}";
+            if (request.email != null && confirmationLink != null)
+                await _emailSender.EmailConfirmationMessage(request.email!, confirmationLink!);
 
             return Ok(new { Message = "Registration successful" });
         }

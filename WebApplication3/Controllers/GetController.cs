@@ -55,6 +55,7 @@ namespace WebApplication3.Controllers
             // Обработка исключений и возврат ошибки сервера.
             catch (Exception ex)
             {
+                Console.WriteLine(ex);
                 return StatusCode(500, new { Error = "An error occurred while processing your request. Please try again later." });
             }
         }
