@@ -9,8 +9,8 @@ namespace WebApplication3
         public string? Username { get; set; }
 
         [Required]
-        [EmailAddress] // Если вы хотите использовать email как имя пользователя
-        public string? Email { get; set; } // Опционально
+        [EmailAddress]
+        public string? Email { get; set; }
 
         [Required]
         public string? Password { get; set; }
