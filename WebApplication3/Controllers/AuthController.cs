@@ -21,7 +21,7 @@ namespace WebApplication3.Controllers
         private readonly IEmailSender _emailSender;
 
         // Конструктор для внедрения зависимостей.
-        public AuthController(ApplicationDbContext context, TokenHelper tokenHelper, EmailSender emailSender)
+        public AuthController(ApplicationDbContext context, TokenHelper tokenHelper, IEmailSender emailSender)
         {
             _context = context; // Контекст базы данных.
             _tokenHelper = tokenHelper; // Помощник для работы с JWT.

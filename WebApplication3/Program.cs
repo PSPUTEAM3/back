@@ -14,10 +14,10 @@ var configuration = builder.Configuration; // Получение объекта конфигурации, ко
 builder.WebHost.UseKestrel(options =>
 {
     options.Listen(IPAddress.Any, 5267); // Настройка сервера на прослушивание всех доступных IP-адресов на порту 5267 (HTTP).
-    options.Listen(IPAddress.Any, 7084, listenOptions =>
-    {
-        listenOptions.UseHttps(); // Настройка сервера на прослушивание всех доступных IP-адресов на порту 7084 (HTTPS).
-    });
+    //options.Listen(IPAddress.Any, 7084, listenOptions =>
+    //{
+    //    listenOptions.UseHttps(); // Настройка сервера на прослушивание всех доступных IP-адресов на порту 7084 (HTTPS).
+    //});
 });
 
 // Добавление контекста базы данных с использованием MySQL в качестве провайдера базы данных.
