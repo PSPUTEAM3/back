@@ -30,7 +30,8 @@ namespace WebApplication3.Controllers
 
         // Метод для получения токена.
         [HttpPost("token")]
-        public async Task<IActionResult> GetToken([FromBody] AuthRequest request)
+        //public async Task<IActionResult> GetToken([FromBody] AuthRequest request)
+        public async Task<IActionResult> GetToken([FromForm] string email, [FromForm] string password)
         {
             // Проверка входных данных.
             if (!ModelState.IsValid)
@@ -38,11 +39,9 @@ namespace WebApplication3.Controllers
             try
             {
                 // Ищем пользователя в базе по имени пользователя.
-                var user = _context.users.SingleOrDefault(u => u.Email == request.email);
-                //if (user == null)
-                //    user = _context.users.SingleOrDefault(u => u.Email == request.Username);
+                var user = _context.users.SingleOrDefault(u => u.Email == email);
                 // Если пользователь не найден или пароль неверен, возвращаем ошибку 401.
-                if (user == null || !VerifyPassword(request.password!, user.PasswordHash!))
+                if (user == null || !VerifyPassword(password!, user.PasswordHash!))
                     return Unauthorized();
 
                 // Если email не подтвержден, возвращаем ошибку 400.
@@ -84,7 +83,9 @@ namespace WebApplication3.Controllers
 
         // Метод для обновления токена с использованием рефреш-токена.
         [HttpPost("refresh-token")]
-        public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequest request)
+        //public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequest request)
+        public async Task<IActionResult> RefreshToken([FromForm]string refreshToken)
+
         {
             try
             {
@@ -94,7 +95,7 @@ namespace WebApplication3.Controllers
                     _tokenHelper.ToInvalidToken(_tokenHelper.GetCurrentTokenId(currentToken), _tokenHelper.GetTokenExpiryDate(currentToken));
 
                 // Ищем пользователя в базе по рефреш-токену
-                var user = await _context.users.FirstOrDefaultAsync(u => u.RefreshToken == request.refreshToken);
+                var user = await _context.users.FirstOrDefaultAsync(u => u.RefreshToken == refreshToken);
 
                 // Если рефреш-токен невалидный или истек, возвращаем ошибку 401.
                 if (user == null || user.RefreshTokenExpiryDate < DateTime.UtcNow)
@@ -127,12 +128,11 @@ namespace WebApplication3.Controllers
 
         // Метод для инвалидации текущего токена.
         [HttpPost("invalidate-token")]
-        public IActionResult InvalidateCurrentToken()
+        public IActionResult InvalidateCurrentToken([FromForm] string currentToken)
         {
             try
             {
                 // Получаем текущий токен из заголовка.
-                string currentToken = Request.HttpContext.Request.Headers["Authorization"].ToString();
                 if (_tokenHelper.IsTokenExpired(currentToken))
                     return Unauthorized(new { Message = "Expired token" });
 
@@ -155,11 +155,13 @@ namespace WebApplication3.Controllers
 
         // Метод действия контроллера для регистрации нового пользователя.
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegistrationRequest request)
+        //public async Task<IActionResult> Register([FromBody] RegistrationRequest request)
+       public async Task<IActionResult> Register([FromForm]string email, [FromForm]string password, [FromForm]string username)
+
         {
             // Проверка на существование пользователя с таким же адресом электронной почты.
             var existingUser = await _context.users
-                .FirstOrDefaultAsync(u => u.Email == request.email);
+                .FirstOrDefaultAsync(u => u.Email == email);
 
             if (existingUser != null)
             {
@@ -167,14 +169,14 @@ namespace WebApplication3.Controllers
             }
 
             // Хеширование пароля
-            string hashedPassword = BCrypt.Net.BCrypt.HashPassword(request.password);
+            string hashedPassword = BCrypt.Net.BCrypt.HashPassword(password);
             string emailConfirmationCode = Guid.NewGuid().ToString();
 
             // Создание нового пользователя
             var newUser = new ApplicationUser
             {
-                Username = request.username,
-                Email = request.email,
+                Username = username,
+                Email = email,
                 PasswordHash = hashedPassword,
                 EmailConfirmed = false,
                 EmailConfirmationCode = emailConfirmationCode
@@ -184,8 +186,8 @@ namespace WebApplication3.Controllers
 
             // Создание ссылки для подтверждения адреса электронной почты.
             var confirmationLink = $"{Request.Scheme}://{Request.Host}/api/auth/confirm-email?code={emailConfirmationCode}";
-            if (request.email != null && confirmationLink != null)
-                await _emailSender.EmailConfirmationMessage(request.email!, confirmationLink!);
+            if (email != null && confirmationLink != null)
+                await _emailSender.EmailConfirmationMessage(email!, confirmationLink!);
 
             return Ok(new { Message = "Registration successful" });
         }

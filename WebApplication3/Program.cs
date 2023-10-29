@@ -52,7 +52,8 @@ builder.Services.AddTransient<IEmailSender, EmailSender>(); // Добавление сервис
 builder.Services.AddTransient<TokenHelper>(); // Добавление помощника по работе с токенами.
 builder.Services.AddTransient<TokenCleanupService>(); // Добавление сервиса очистки токенов.
 builder.Services.AddHostedService<TokenCleanupHostedService>(); // Добавление фонового сервиса для очистки токенов.
-
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
 // Построение приложения на основе ранее заданных настроек.
 var app = builder.Build();
 
@@ -68,6 +69,8 @@ app.UseHttpsRedirection(); // Включение переадресации с HTTP на HTTPS.
 app.UseAuthorization(); // Включение механизма авторизации.
 
 app.MapControllers(); // Настройка маршрутизации для контроллеров.
+app.UseRequestLogging();
+
 
 app.Run(); // Запуск приложения.
 
