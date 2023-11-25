@@ -42,16 +42,16 @@ builder.Services.AddAuthentication(options =>
         ValidateAudience = false
     };
 });
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("MyPolicy",
-        builder =>
-        {
-            builder.WithOrigins("*", "*")
-                   .AllowAnyHeader()
-                   .AllowAnyMethod();
-        });
-});
+//builder.Services.AddCors(options =>
+//{
+//    options.AddPolicy("MyPolicy",
+//        builder =>
+//        {
+//            builder.WithOrigins("*", "*")
+//                   .AllowAnyHeader()
+//                   .AllowAnyMethod();
+//        });
+//});
 
 
 // Добавление сервисов в контейнер зависимостей.
@@ -77,7 +77,7 @@ if (app.Environment.IsDevelopment()) // Проверка, работает ли приложение в режим
 
 app.UseRouting(); // Добавление маршрутизации.
 
-app.UseCors("MyPolicy");
+//app.UseCors("MyPolicy");
 app.UseAuthentication(); // Включение механизма аутентификации.
 app.UseHttpsRedirection(); // Включение переадресации с HTTP на HTTPS.
 
