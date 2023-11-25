@@ -42,6 +42,17 @@ builder.Services.AddAuthentication(options =>
         ValidateAudience = false
     };
 });
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("MyPolicy",
+        builder =>
+        {
+            builder.WithOrigins("*", "*")
+                   .AllowAnyHeader()
+                   .AllowAnyMethod();
+        });
+});
+
 
 // Добавление сервисов в контейнер зависимостей.
 builder.Services.AddControllers();// Добавление контроллеров.
@@ -63,6 +74,8 @@ if (app.Environment.IsDevelopment()) // Проверка, работает ли приложение в режим
     app.UseSwagger(); // Включение маршрутизации для документации Swagger.
     app.UseSwaggerUI(); // Включение пользовательского интерфейса Swagger.
 }
+
+app.UseCors("MyPolicy");
 app.UseAuthentication(); // Включение механизма аутентификации.
 app.UseHttpsRedirection(); // Включение переадресации с HTTP на HTTPS.
 
