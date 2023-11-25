@@ -75,6 +75,8 @@ if (app.Environment.IsDevelopment()) // Проверка, работает ли приложение в режим
     app.UseSwaggerUI(); // Включение пользовательского интерфейса Swagger.
 }
 
+app.UseRouting(); // Добавление маршрутизации.
+
 app.UseCors("MyPolicy");
 app.UseAuthentication(); // Включение механизма аутентификации.
 app.UseHttpsRedirection(); // Включение переадресации с HTTP на HTTPS.
