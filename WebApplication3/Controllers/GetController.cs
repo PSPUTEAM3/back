@@ -60,39 +60,5 @@ namespace WebApplication3.Controllers
                 return StatusCode(500, new { Error = "An error occurred while processing your request. Please try again later." });
             }
         }
-        [HttpPost("report")]
-        public async Task<IActionResult> GetReportForProduct([FromForm] string product)
-        {
-            string question = "Какое оборудование для тестирования и испытаний?";
-            var report = "Начало";
-            using (var client = new HttpClient())
-            {
-                foreach (var entry in _context.GOSTEntry)
-                {
-                    // Задайте адрес вашего Flask-API
-                    var apiUrl = "http://62.113.116.57:5000/api";
-
-                    var requestData = new
-                    {
-                        entry = entry.Content,
-                        question = question,
-                        product = product
-                    };
-
-                    var jsonContent = JsonConvert.SerializeObject(requestData);
-                    var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
-
-                    var response = await client.PostAsync(apiUrl, content);
-                    if (response.IsSuccessStatusCode)
-                    {
-                        // Обработайте ответ
-                        report += await response.Content.ReadAsStringAsync();
-                        // Далее обработайте responseBody, если это необходимо
-                    }
-                    await Task.Delay(TimeSpan.FromSeconds(5));
-                }
-                return Ok(new { Report = report });
-            }
-        }
     }
 }

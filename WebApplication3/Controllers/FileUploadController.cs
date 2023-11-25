@@ -120,11 +120,10 @@ namespace WebApplication3.Controllers
             }
 
             // Сохраните текст в базе данных
-            var newTextEntry = new GOSTEntry // предположим, у вас есть модель TextEntry в вашем DbContext
-            {
-                Content = fileContent
-            };
-            _context.GOSTEntry.Add(newTextEntry);
+            //var newTextEntry = new GOSTEntry // предположим, у вас есть модель TextEntry в вашем DbContext
+            //{
+            //    Content = fileContent
+            //};
             await _context.SaveChangesAsync();
             return true;
         }

@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
+using Microsoft.Office.Interop.Word;
 
 namespace WebApplication3.Controllers
 {
@@ -64,7 +65,8 @@ namespace WebApplication3.Controllers
                 {
                     Token = token,
                     RefreshToken = refreshToken,
-                    Username = user.Username
+                    Username = user.Username,
+                    Email = user.Email
                 });
             }
             catch (Exception ex)
@@ -185,7 +187,7 @@ namespace WebApplication3.Controllers
             await _context.SaveChangesAsync();
 
             // Создание ссылки для подтверждения адреса электронной почты.
-            var confirmationLink = $"{Request.Scheme}://{Request.Host}/api/auth/confirm-email?code={emailConfirmationCode}";
+            var confirmationLink = $"{Request.Scheme}://{Request.Host}/api/v1/auth/confirm-email?code={emailConfirmationCode}";
             if (email != null && confirmationLink != null)
                 await _emailSender.EmailConfirmationMessage(email!, confirmationLink!);
 
