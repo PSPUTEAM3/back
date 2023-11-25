@@ -42,16 +42,17 @@ builder.Services.AddAuthentication(options =>
         ValidateAudience = false
     };
 });
-//builder.Services.AddCors(options =>
-//{
-//    options.AddPolicy("MyPolicy",
-//        builder =>
-//        {
-//            builder.WithOrigins("*", "*")
-//                   .AllowAnyHeader()
-//                   .AllowAnyMethod();
-//        });
-//});
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("MyPolicy",
+        builder =>
+        {
+            builder.WithOrigins("*", "*") // Замените эти источники на актуальные для вашего приложения
+                   .AllowAnyHeader()
+                   .AllowAnyMethod()
+                   .AllowCredentials(); // Добавьте это, если ваше приложение использует учетные данные, такие как cookies или authentication headers
+        });
+});
 
 
 // Добавление сервисов в контейнер зависимостей.
@@ -77,7 +78,7 @@ if (app.Environment.IsDevelopment()) // Проверка, работает ли приложение в режим
 
 app.UseRouting(); // Добавление маршрутизации.
 
-//app.UseCors(policyBuilder => policyBuilder.AllowAnyOrigin()); app.UseAuthentication(); // Включение механизма аутентификации.
+app.UseCors("MyPolicy"); 
 app.UseHttpsRedirection(); // Включение переадресации с HTTP на HTTPS.
 
 app.UseAuthorization(); // Включение механизма авторизации.
