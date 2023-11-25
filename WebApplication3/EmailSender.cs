@@ -21,15 +21,22 @@ namespace WebApplication3
         public async Task EmailConfirmationMessage(string email, string confirmationCode)
         {
             var message = new MimeMessage();
-            message.From.Add(new MailboxAddress("XakatonApp", _configuration["Email:Username"]));
-            message.To.Add(MailboxAddress.Parse(email));
-            message.Subject = "Подтверждение почты";
-
-            message.Body = new TextPart("plain")
+            try
             {
-                Text = $"Подтвердите ваш Email перейдя по ссылке: {confirmationCode}"
-            };
+                message.From.Add(new MailboxAddress("XakatonApp", _configuration["Email:Username"]));
+                message.To.Add(MailboxAddress.Parse(email));
+                message.Subject = "Подтверждение почты";
 
+                message.Body = new TextPart("plain")
+                {
+                    Text = $"Подтвердите ваш Email перейдя по ссылке: {confirmationCode}"
+                };
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                return;
+            }
             await SendMessage(message);
         }
         private async Task SendMessage(MimeMessage message)
