@@ -28,16 +28,16 @@ namespace WebApplication3.Controllers
 
         // Метод действия контроллера для получения имени пользователя из токена.
         [HttpPost("username-from-token")]
-        public IActionResult GetUserNameFromToken([FromForm] string currentToken)
+        public IActionResult GetUserNameFromToken([FromHeader(Name = "Authorization")] string authorizationHeader)
         {
             try
             {
                 // Извлечение имени пользователя из токена.
-                if (_tokenHelper.IsTokenExpired(currentToken))
+                if (_tokenHelper.IsTokenExpired(authorizationHeader))
                     return Unauthorized(new { Message = "Expired token" });
 
                 // Получение идентификатора текущего токена.
-                var currentTokenId = _tokenHelper.GetCurrentTokenId(currentToken);
+                var currentTokenId = _tokenHelper.GetCurrentTokenId(authorizationHeader);
 
                 // Проверка действительности токена.
                 if (_tokenHelper.IsInvalidToken(currentTokenId))
