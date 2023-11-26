@@ -16,7 +16,7 @@ builder.WebHost.UseKestrel(options =>
     options.Listen(IPAddress.Any, 5267); // Настройка сервера на прослушивание всех доступных IP-адресов на порту 5267 (HTTP).
     options.Listen(IPAddress.Any, 7084, listenOptions =>
     {
-        listenOptions.UseHttps(); // Настройка сервера на прослушивание всех доступных IP-адресов на порту 7084 (HTTPS).
+        listenOptions.UseHttps("C:\\Users\\King\\Desktop\\net7.0\\certificate.pfx", "password"); // Настройка сервера на прослушивание всех доступных IP-адресов на порту 7084 (HTTPS).
     });
 });
 

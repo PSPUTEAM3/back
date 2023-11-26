@@ -11,7 +11,7 @@
 
         public void RemoveExpiredTokens()
         {
-            var currentDate = DateTime.UtcNow; // используем UTC, чтобы избежать проблем с часовыми поясами
+            var currentDate = DateTime.UtcNow; // используем UTC
 
             var tokensToRemove = _context.InvalidTokens
                 .Where(token => token.ExpiryDate < currentDate)
@@ -23,5 +23,6 @@
                 _context.SaveChanges();
             }
         }
+
     }
 }
