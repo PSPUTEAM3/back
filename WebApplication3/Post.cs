@@ -15,7 +15,7 @@ namespace WebApplication3
         public string title {  get; set; }
         public string text { get; set; }
         public string type { get; set; }
-        public JObject tags { get; set; }
-        public JObject images { get; set; }
+        public string tags { get; set; }
+        public string images { get; set; }
     }
 }
