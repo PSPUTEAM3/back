@@ -7,6 +7,8 @@ using System.Text;
 using System.Net.Http;
 using System.Net.Http.Json;
 using Newtonsoft.Json;
+using Microsoft.Extensions.Hosting;
+using Microsoft.EntityFrameworkCore;
 
 namespace WebApplication3.Controllers
 {
@@ -59,6 +61,11 @@ namespace WebApplication3.Controllers
                 Console.WriteLine(ex);
                 return StatusCode(500, new { Error = "An error occurred while processing your request. Please try again later." });
             }
+        }
+        [HttpGet("posts")]
+        public async Task<ActionResult<IEnumerable<Post>>> GetPosts()
+        {
+            return await _context.post.ToListAsync();
         }
     }
 }

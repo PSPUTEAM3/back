@@ -8,4 +8,5 @@ public class ApplicationDbContext : DbContext
     }
     public DbSet<ApplicationUser> users { get; set; }
     public DbSet<InvalidToken> InvalidTokens { get; set; }
+    public DbSet<Post> post { get; set; }
 }
