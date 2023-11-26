@@ -6,6 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Server.Kestrel;
 using System.Net;
 using WebApplication3;
+using Microsoft.AspNetCore.Builder;
 
 var builder = WebApplication.CreateBuilder(args); // Создание и инициализация объекта, который предоставляет средства для создания приложения.
 var configuration = builder.Configuration; // Получение объекта конфигурации, который позволяет работать с настройками приложения.
@@ -49,8 +50,7 @@ builder.Services.AddCors(options =>
         {
             builder.WithOrigins("*", "*") // Замените эти источники на актуальные для вашего приложения
                    .AllowAnyHeader()
-                   .AllowAnyMethod()
-                   .AllowCredentials(); // Добавьте это, если ваше приложение использует учетные данные, такие как cookies или authentication headers
+                   .AllowAnyMethod();
         });
 });
 
@@ -76,14 +76,17 @@ if (app.Environment.IsDevelopment()) // Проверка, работает ли приложение в режим
     app.UseSwaggerUI(); // Включение пользовательского интерфейса Swagger.
 }
 
-app.UseRouting(); // Добавление маршрутизации.
+app.UseRouting();
 
-app.UseCors("MyPolicy"); 
-app.UseHttpsRedirection(); // Включение переадресации с HTTP на HTTPS.
+app.UseCors("MyPolicy");
 
-app.UseAuthorization(); // Включение механизма авторизации.
+
+app.UseAuthentication(); // Затем аутентификация
+app.UseAuthorization(); // И после - авторизация
 
 app.MapControllers(); // Настройка маршрутизации для контроллеров.
+
+app.UseHttpsRedirection(); // Включение переадресации с HTTP на HTTPS.
 app.UseRequestLogging();
 
 
